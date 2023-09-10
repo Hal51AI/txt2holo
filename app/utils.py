@@ -12,11 +12,13 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 from math import pi
 from urllib.request import urlretrieve
+from typing import Union
 
 from .config import settings
+from .types import StabilityAPIResponse, Numeric
 
 
-def request_image(prompt: str) -> dict[str, str]:
+def request_image(prompt: str) -> StabilityAPIResponse:
     """
     Requests an image from the Stability API.
 
@@ -91,7 +93,7 @@ def get_dnn_superres(upscale_factor: int = 3) -> cv2.dnn_superres.DnnSuperResImp
 
 
 def crop_circle_fade(
-    image: Image.Image, blur_factor: float = 4.0, radius_factor: float = 1.4
+    image: Image.Image, blur_factor: Numeric = 4.0, radius_factor: Numeric = 1.4
 ) -> Image.Image:
     """
     Crops a circle from the center of the image and applies a Gaussian blur to the edges.
@@ -139,7 +141,7 @@ def crop_circle_fade(
     return result
 
 
-def get_rad(theta, phi, gamma):
+def get_rad(theta: Numeric, phi: Numeric, gamma: Numeric) -> tuple[float, float, float]:
     return (
         deg_to_rad(theta),
         deg_to_rad(phi),
@@ -147,7 +149,7 @@ def get_rad(theta, phi, gamma):
     )
 
 
-def deg_to_rad(deg):
+def deg_to_rad(deg: Numeric) -> float:
     return deg * pi / 180.0
 
 
@@ -244,7 +246,7 @@ class PerspectiveTransformer:
         Image to be transformed
     """
 
-    def __init__(self, image):
+    def __init__(self, image: Union[Image.Image, np.ndarray]) -> None:
         if isinstance(image, Image.Image):
             self.image = pil_to_cv2(image)
         elif isinstance(image, np.ndarray):
@@ -257,7 +259,15 @@ class PerspectiveTransformer:
 
         self.height, self.width, self.num_channels = self.image.shape
 
-    def rotate_along_axis(self, theta=0, phi=0, gamma=0, dx=0, dy=0, dz=0):
+    def rotate_along_axis(
+        self,
+        theta: Numeric = 0,
+        phi: Numeric = 0,
+        gamma: Numeric = 0,
+        dx: Numeric = 0,
+        dy: Numeric = 0,
+        dz: Numeric = 0,
+    ) -> np.ndarray:
         """
         Wrapper of Rotating a Image
         """
@@ -275,7 +285,9 @@ class PerspectiveTransformer:
 
         return cv2.warpPerspective(self.image.copy(), mat, (self.width, self.height))
 
-    def get_M(self, theta, phi, gamma, dx, dy, dz):
+    def get_M(
+        self, theta: Numeric, phi: Numeric, gamma: Numeric, dx: Numeric, dy: Numeric, dz: Numeric
+    ) -> np.ndarray:
         """
         Get Perspective Projection Matrix
         """
