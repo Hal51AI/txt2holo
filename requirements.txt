@@ -1,0 +1,8 @@
+fastapi
+ffmpeg-python
+opencv-contrib-python
+opencv-python
+Pillow
+pydantic_settings
+requests
+uvicorn
