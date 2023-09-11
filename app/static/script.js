@@ -6,13 +6,19 @@
         const textElement = document.getElementById('textInput');
         const submitButton = document.getElementById('submit');
 
-        textElement.style.display = 'none';
-        submitButton.style.display = 'none';
+        // Start the fade out animation for form elements
+        [textElement, submitButton].forEach((element) => {
+            element.classList.add('fade-out');
+            element.addEventListener('animationend', function() {
+                element.style.display = 'none';
+            });
+        })
 
+        // Fetch the video from the server
         const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
         const blob = await response.blob();
 
-        // Create and embed the video tag
+        // Create and video and container elements
         const videoElement = document.createElement('video');
         videoElement.src = URL.createObjectURL(blob);
         videoElement.autoplay = true;
@@ -23,6 +29,7 @@
         videoContainer.innerHTML = '';  // Clear previous videos if any
         videoContainer.appendChild(videoElement);
 
+        // Add hotkeys to play/pause the video
         document.addEventListener('keydown', (event) => {
             if (event.key === ' ' || event.key === 'p') {
                 playVideo();
@@ -47,9 +54,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Add event listener to the submit button
         document.getElementById('submit').addEventListener('click', fetchVideo);
 
-        // submit the form manually if we press enter key
+        // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {
                 const textInput = document.getElementById('textInput');

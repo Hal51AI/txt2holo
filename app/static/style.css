@@ -20,3 +20,18 @@ input[type="text"] {
     padding: 8px 10px;
     border: none;
 }
+
+@keyframes fadeAnimation {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+.fade-out {
+    animation: fadeAnimation 0.5s forwards; /* adjust the 0.5s if you want it to be faster or slower */
+}
