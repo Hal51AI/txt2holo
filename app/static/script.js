@@ -3,6 +3,8 @@
      * Fetches the video from the server and embeds it in the page
      */
     async function fetchVideo() {
+        document.body.requestFullscreen();
+
         const textElement = document.getElementById('textInput');
         const submitButton = document.getElementById('submit');
 
@@ -33,6 +35,8 @@
         document.addEventListener('keydown', (event) => {
             if (event.key === ' ' || event.key === 'p') {
                 playVideo();
+            } else if (event.key === 'f') {
+                document.body.requestFullscreen();
             }
         });
     }
@@ -59,7 +63,9 @@
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
+            const textElement = document.getElementById('textInput');
+            const textExists = ![...textElement.classList].includes('fade-out');
+            if (event.key === 'Enter' && textExists) {
                 const textInput = document.getElementById('textInput');
                 if (textInput.value !== '') {
                     fetchVideo();
