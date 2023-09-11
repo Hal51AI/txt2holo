@@ -1,0 +1,22 @@
+body {
+    background-color: black;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input[type="text"] {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+}
+
+.submit {
+    margin: 4px 2px;
+    cursor: pointer;
+    padding: 8px 10px;
+    border: none;
+}

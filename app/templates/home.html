@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Hologram</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <input type="text" id="textInput" placeholder="Enter text...">
+    <input class="submit" id="submit" type="submit" value="Submit">
+
+    <div id="videoContainer"></div>
+
+    <script src="{{ url_for('static', path='/script.js') }}"></script>
+</body>
+</html>
