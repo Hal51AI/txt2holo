@@ -1,0 +1,8 @@
+services:
+  txt2holo:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      - STABILITY_API_KEY=sk-v0qpS5iAEWD2TxIFyNflGDZLbrCiinRIJf524RPId1xp8Wx4

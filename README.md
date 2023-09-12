@@ -29,3 +29,10 @@ Then run with
 ```bash
 docker run -it -p 8000:8000 -e STABILITY_API_KEY=<API_KEY> txt2holo
 ```
+
+## Docker Compose
+An easier way to run a container is to fill out the `docker-compose-example.yml`, rename it to `docker-compose.yml` and run
+
+```bash
+docker compose up
+```

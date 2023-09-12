@@ -2,3 +2,4 @@ __pycache__/
 .git/
 .env
 Dockerfile
+docker-compose.yml
