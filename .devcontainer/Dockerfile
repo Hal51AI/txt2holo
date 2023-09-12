@@ -1,11 +1,7 @@
-FROM python:3.11-slim
+FROM mcr.microsoft.com/devcontainers/python:1-3.11-bullseye
 
 ENV LANG C.UTF-8
 ENV PYTHONUNBUFFERED 1
-
-WORKDIR /app
-
-COPY . /app
 
 RUN : \
     && apt-get -y update \
@@ -15,8 +11,3 @@ RUN : \
         ffmpeg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-RUN : \
-    && pip install --no-cache -r requirements.txt
-
-ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0"]
