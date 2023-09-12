@@ -19,4 +19,9 @@ RUN : \
 RUN : \
     && pip install --no-cache -r requirements.txt
 
-ENTRYPOINT ["uvicorn", "app.main:app", "--host", "0.0.0.0"]
+ENTRYPOINT [
+    "gunicorn",
+    "app.main:app",
+    "--worker-class",
+    "uvicorn.workers.UvicornH11Worker"
+]

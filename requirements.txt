@@ -1,5 +1,6 @@
 aiohttp
 fastapi
+gunicorn
 jinja2
 opencv-contrib-python
 opencv-python
