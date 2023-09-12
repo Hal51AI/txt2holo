@@ -78,7 +78,9 @@ def get_dnn_superres(upscale_factor: int = 3) -> cv2.dnn_superres.DnnSuperResImp
         Super Resolution Model
     """
     if upscale_factor not in range(2, 5):
-        raise ValueError(f"Upscale factor must be between 2 and 4, got {upscale_factor}")
+        raise ValueError(
+            f"Upscale factor must be between 2 and 4, got {upscale_factor}"
+        )
 
     # Download the pretrained model
     filename = f"ESPCN_x{upscale_factor}.pb"
@@ -202,7 +204,9 @@ def cv2_to_pil(cv2_image: np.ndarray) -> Image.Image:
     return pil_image
 
 
-async def write_rotating_video(image: np.ndarray | Image.Image, output_video_path: str) -> None:
+async def write_rotating_video(
+    image: np.ndarray | Image.Image, output_video_path: str
+) -> None:
     """
     Output a rotating video of the image rotating around the y-axis
 
@@ -229,7 +233,9 @@ async def write_rotating_video(image: np.ndarray | Image.Image, output_video_pat
 
     # For each frame, rotate the image and write it directly to the ffmpeg pipe
     it = PerspectiveTransformer(image)
-    input_bytes = [cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes() for i in range(360)]
+    input_bytes = [
+        cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes() for i in range(360)
+    ]
 
     await process.execute(b"".join(input_bytes))
 
@@ -253,7 +259,9 @@ class PerspectiveTransformer:
             raise ValueError("Image needs to be a numpy array or PIL image format")
 
         if not len(self.image.shape) == 3:
-            raise ValueError(f"Image needs to be a 3-dim array, got {len(self.image.shape)}-dim")
+            raise ValueError(
+                f"Image needs to be a 3-dim array, got {len(self.image.shape)}-dim"
+            )
 
         self.height, self.width, self.num_channels = self.image.shape
 
@@ -284,7 +292,13 @@ class PerspectiveTransformer:
         return cv2.warpPerspective(self.image.copy(), mat, (self.width, self.height))
 
     def get_M(
-        self, theta: Numeric, phi: Numeric, gamma: Numeric, dx: Numeric, dy: Numeric, dz: Numeric
+        self,
+        theta: Numeric,
+        phi: Numeric,
+        gamma: Numeric,
+        dx: Numeric,
+        dy: Numeric,
+        dz: Numeric,
     ) -> np.ndarray:
         """
         Get Perspective Projection Matrix
