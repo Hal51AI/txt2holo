@@ -19,4 +19,4 @@ RUN : \
 RUN : \
     && pip install --no-cache -r requirements.txt
 
-ENTRYPOINT ["gunicorn", "app.main:app", "--worker-class", "uvicorn.workers.UvicornH11Worker"]
+ENTRYPOINT ["gunicorn", "--bind", ":8000", "app.main:app", "--worker-class", "uvicorn.workers.UvicornH11Worker"]
