@@ -5,20 +5,21 @@ logging.getLogger().setLevel(logging.ERROR)
 
 import os
 import cv2
-import ffmpeg
-import requests
+import aiohttp
 import numpy as np
 
 from PIL import Image, ImageDraw, ImageFilter
 from math import pi
 from urllib.request import urlretrieve
 from typing import Union
+from ffmpeg import Progress
+from ffmpeg.asyncio import FFmpeg
 
 from .config import settings
 from .types import StabilityAPIResponse, Numeric
 
 
-def request_image(prompt: str) -> StabilityAPIResponse:
+async def request_image(prompt: str) -> StabilityAPIResponse:
     """
     Requests an image from the Stability API.
 
@@ -35,29 +36,31 @@ def request_image(prompt: str) -> StabilityAPIResponse:
     if not settings.STABILITY_API_KEY:
         raise ValueError("API key is not set in environment variable STABILITY_API_KEY")
 
-    response = requests.post(
-        "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
-        headers={
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {settings.STABILITY_API_KEY}",
-        },
-        json={
-            "steps": 40,
-            "width": 1024,
-            "height": 1024,
-            "seed": 0,
-            "cfg_scale": 5,
-            "samples": 1,
-            "text_prompts": [
-                {"text": prompt, "weight": 1},
-                {"text": "blurry, bad", "weight": -1},
-            ],
-        },
-    )
-    if response.status_code != 200:
-        raise Exception("Non-200 response: " + str(response.text))
-    return response.json()
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {settings.STABILITY_API_KEY}",
+            },
+            json={
+                "steps": 40,
+                "width": 1024,
+                "height": 1024,
+                "seed": 0,
+                "cfg_scale": 5,
+                "samples": 1,
+                "text_prompts": [
+                    {"text": prompt, "weight": 1},
+                    {"text": "blurry, bad", "weight": -1},
+                ],
+            },
+        ) as response:
+            if not response.ok:
+                raise Exception("Non-200 response: " + str(response.text))
+            json_result = await response.json()
+    return json_result
 
 
 def get_dnn_superres(upscale_factor: int = 3) -> cv2.dnn_superres.DnnSuperResImpl:
@@ -199,7 +202,7 @@ def cv2_to_pil(cv2_image: np.ndarray) -> Image.Image:
     return pil_image
 
 
-def write_rotating_video(image: np.ndarray | Image.Image, output_video_path: str) -> None:
+async def write_rotating_video(image: np.ndarray | Image.Image, output_video_path: str) -> None:
     """
     Output a rotating video of the image rotating around the y-axis
 
@@ -217,23 +220,18 @@ def write_rotating_video(image: np.ndarray | Image.Image, output_video_path: str
     else:
         raise ValueError("Image needs to be a numpy array or PIL image format")
 
-    # Prepare an in-memory pipe for ffmpeg
     process = (
-        ffmpeg.input("pipe:", format="rawvideo", pix_fmt="rgb24", s="{}x{}".format(w, h))
-        .output(output_video_path, vcodec="h264", r=30, crf=22, preset="fast")
-        .run_async(pipe_stdin=True, overwrite_output=True)
+        FFmpeg()
+        .option("y")
+        .input("pipe:0", options={"f": "rawvideo", "pix_fmt": "rgb24", "s": f"{w}x{h}"})
+        .output(output_video_path)
     )
 
     # For each frame, rotate the image and write it directly to the ffmpeg pipe
     it = PerspectiveTransformer(image)
-    for i in range(360):
-        rotated_img = it.rotate_along_axis(phi=i, dx=5)
-        # Convert the rotated image to RGB format and write it to the ffmpeg pipe
-        image_rgb = cv2_to_pil(rotated_img)
-        process.stdin.write(image_rgb.tobytes())
+    input_bytes = [cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes() for i in range(360)]
 
-    process.stdin.close()
-    process.wait()
+    await process.execute(b"".join(input_bytes))
 
 
 class PerspectiveTransformer:

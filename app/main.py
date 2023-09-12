@@ -32,12 +32,12 @@ async def home(request: Request):
     responses={200: {"content": {"video/mp4": {}}}},
 )
 async def generate_video(prompt: str) -> Response:
-    response = request_image(prompt)
+    response = await request_image(prompt)
     image = Image.open(io.BytesIO(base64.b64decode(response["artifacts"][0]["base64"])))
     image = crop_circle_fade(image, radius_factor=1.5)
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        write_rotating_video(image, f"{tmpdir}/out.mp4")
+        await write_rotating_video(image, f"{tmpdir}/out.mp4")
         with open(f"{tmpdir}/out.mp4", "rb") as f:
             video_bytes = f.read()
 
