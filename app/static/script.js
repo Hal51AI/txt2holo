@@ -5,8 +5,16 @@
     async function fetchVideo() {
         document.body.requestFullscreen();
 
-        // Fade out the text input and the submit button
-        fadeOutByIds('textInput', 'submit');
+        const textElement = document.getElementById('textInput');
+        const submitButton = document.getElementById('submit');
+
+        // Start the fade out animation for form elements
+        [textElement, submitButton].forEach((element) => {
+            element.classList.add('fade-out');
+            element.addEventListener('animationend', function() {
+                element.style.display = 'none';
+            });
+        })
 
         // Fetch the video from the server
         const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
@@ -27,22 +35,6 @@
     }
 
     /**
-     * Fades out the elements with the given ids
-     * 
-     * @param  {...string} ids
-     * @returns {void}
-     **/
-    function fadeOutByIds(...ids) {
-        ids.forEach((id) => {
-            const element = document.getElementById(id);
-            element.classList.add('fade-out');
-            element.addEventListener('animationend', function() {
-                element.style.display = 'none';
-            });
-        });
-    }
-
-    /**
      * Creates a video element from a blob.
      * 
      * We create a video element with the blob as a source, then apply
@@ -54,6 +46,7 @@
      * 
      * @param {Blob} blob
      * @returns {HTMLVideoElement}
+     * 
      */
     function createVideoElement(blob) {
         const videoElement = document.createElement('video');
