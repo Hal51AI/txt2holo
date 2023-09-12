@@ -59,6 +59,7 @@
             videoElement.setAttribute('muted', '');
             videoElement.setAttribute('autoplay', '');
             videoElement.setAttribute('loop', '');
+            videoElement.setAttribute('playsinline', '');
             videoElement.muted = true;
         });
 
