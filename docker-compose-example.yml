@@ -5,4 +5,4 @@ services:
     ports:
       - 8000:8000
     environment:
-      - STABILITY_API_KEY=sk-v0qpS5iAEWD2TxIFyNflGDZLbrCiinRIJf524RPId1xp8Wx4
+      - STABILITY_API_KEY=<API_KEY>
