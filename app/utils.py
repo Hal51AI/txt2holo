@@ -228,7 +228,7 @@ async def write_rotating_video(
         FFmpeg()
         .option("y")
         .input("pipe:0", options={"f": "rawvideo", "pix_fmt": "rgb24", "s": f"{w}x{h}"})
-        .output(output_video_path)
+        .output(output_video_path, options={"pix_fmt": "yuv420p"})
     )
 
     # For each frame, rotate the image and write it directly to the ffmpeg pipe
