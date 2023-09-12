@@ -42,6 +42,7 @@
      * - muted
      * - autoplay
      * - loop
+     * - playsinline
      * 
      * @param {Blob} blob
      * @returns {HTMLVideoElement}
