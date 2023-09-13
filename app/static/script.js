@@ -29,7 +29,11 @@
             if (event.key === ' ' || event.key === 'p') {
                 playVideo();
             } else if (event.key === 'f') {
-                document.body.requestFullscreen();
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    document.body.requestFullscreen();
+                }
             }
         });
     }

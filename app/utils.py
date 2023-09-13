@@ -1,18 +1,13 @@
-import logging
-
-# Suppress logging messages for a cleaner output
-logging.getLogger().setLevel(logging.ERROR)
-
 import os
 import cv2
 import aiohttp
+import aiofiles
 import numpy as np
 
 from PIL import Image, ImageDraw, ImageFilter
 from math import pi
 from urllib.request import urlretrieve
 from typing import Union
-from ffmpeg import Progress
 from ffmpeg.asyncio import FFmpeg
 
 from .config import settings
@@ -224,36 +219,36 @@ async def write_rotating_video(
     else:
         raise ValueError("Image needs to be a numpy array or PIL image format")
 
-    process = (
-        FFmpeg()
-        .option("y")
-        .input(
-            "pipe:0",
-            options={
-                "f": "rawvideo",
-                "pix_fmt": "rgb24",
-                "s": f"{w}x{h}",
-                "r": "12",
-            },
-        )
-        .output(
-            output_video_path,
-            options={
-                "pix_fmt": "yuv420p",
-                "r": "20",
-            },
-            preset="veryfast",
-        )
-    )
+    transform = PerspectiveTransformer(image)
+    async with aiofiles.tempfile.NamedTemporaryFile("w+b") as tmp:
+        for phi in range(360):
+            rotated_image = transform.rotate_along_axis(phi=phi, dx=5)
+            raw_frame = cv2_to_pil(rotated_image).tobytes()
+            await tmp.write(raw_frame)
 
-    # For each frame, rotate the image and write it directly to the ffmpeg pipe
-    it = PerspectiveTransformer(image)
-    input_bytes = [
-        cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes()
-        for i in range(0, 360, 3)
-    ]
-
-    await process.execute(b"".join(input_bytes))
+        process = (
+            FFmpeg()
+            .option("y")
+            .input(
+                tmp.name,
+                options={
+                    "f": "rawvideo",
+                    "pix_fmt": "rgb24",
+                    "s": f"{w}x{h}",
+                },
+            )
+            .output(
+                output_video_path,
+                options={
+                    "threads": "1",
+                    "c:v": "libx264",
+                    "pix_fmt": "yuv420p",
+                    "movflags": "+faststart",
+                },
+                preset="fast",
+            )
+        )
+        await process.execute()
 
 
 class PerspectiveTransformer:
@@ -305,7 +300,7 @@ class PerspectiveTransformer:
         # Get projection matrix
         mat = self.get_M(rtheta, rphi, rgamma, dx, dy, dz)
 
-        return cv2.warpPerspective(self.image.copy(), mat, (self.width, self.height))
+        return cv2.warpPerspective(self.image, mat, (self.width, self.height))
 
     def get_M(
         self,
