@@ -227,14 +227,30 @@ async def write_rotating_video(
     process = (
         FFmpeg()
         .option("y")
-        .input("pipe:0", options={"f": "rawvideo", "pix_fmt": "rgb24", "s": f"{w}x{h}"})
-        .output(output_video_path, options={"pix_fmt": "yuv420p"}, preset="veryfast")
+        .input(
+            "pipe:0",
+            options={
+                "f": "rawvideo",
+                "pix_fmt": "rgb24",
+                "s": f"{w}x{h}",
+                "r": "12",
+            },
+        )
+        .output(
+            output_video_path,
+            options={
+                "pix_fmt": "yuv420p",
+                "r": "20",
+            },
+            preset="veryfast",
+        )
     )
 
     # For each frame, rotate the image and write it directly to the ffmpeg pipe
     it = PerspectiveTransformer(image)
     input_bytes = [
-        cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes() for i in range(360)
+        cv2_to_pil(it.rotate_along_axis(phi=i, dx=5)).tobytes()
+        for i in range(0, 360, 3)
     ]
 
     await process.execute(b"".join(input_bytes))
