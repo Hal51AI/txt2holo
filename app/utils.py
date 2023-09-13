@@ -240,7 +240,6 @@ async def write_rotating_video(
             .output(
                 output_video_path,
                 options={
-                    "threads": "1",
                     "c:v": "libx264",
                     "pix_fmt": "yuv420p",
                     "movflags": "+faststart",
