@@ -1,29 +1,74 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: black;
-    margin: 0;
-    height: 100vh;
+    background: black;
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+input {
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+input:focus {
+    outline: 2px solid white;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Button on top of the Input */
+.input-container {
+    width: 680px;
+    max-width: 100%;
+    position: relative;
+}
+
+.input-container input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid white;
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    width: 100%;
+}
+
+.input-container button {
+    background: white;
+    border-radius: 50px;
+    height: 80%;
+    aspect-ratio: 1;
+
+    position: absolute;
+    top: 10%;
+    right: 5px;
 }
 
 video {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
-input[type="text"] {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
-}
-
-.submit {
-    margin: 4px 2px;
-    cursor: pointer;
-    padding: 8px 10px;
-    border: none;
+@media (max-width: 680px) {
+    .input-container {
+        width: 100%;
+    }
 }
 
 @keyframes fadeAnimation {

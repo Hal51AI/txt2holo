@@ -3,24 +3,25 @@
      * Fetches the video from the server and embeds it in the page
      */
     async function fetchVideo() {
+        const textElement = document.getElementById('input-prompt');
+        if (textElement.value === '') {
+            return;
+        }
+
         document.body.requestFullscreen();
 
-        const textElement = document.getElementById('textInput');
-        const submitButton = document.getElementById('submit');
-
         // Start the fade out animation for form elements
-        [textElement, submitButton].forEach((element) => {
-            element.classList.add('fade-out');
-            element.addEventListener('animationend', function() {
-                element.style.display = 'none';
-            });
+        const inputContainer = document.getElementById('input-container');
+        inputContainer.classList.add('fade-out');
+        inputContainer.addEventListener('animationend', () => {
+            inputContainer.style.display = 'none';
         })
 
         // Fetch the video from the server
         const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
         const blob = await response.blob();
 
-        const videoContainer = document.getElementById('videoContainer');
+        const videoContainer = document.getElementById('video-container');
         videoContainer.innerHTML = '';  // Clear previous videos if any
         videoContainer.appendChild(createVideoElement(blob));
 
@@ -77,7 +78,7 @@
      * Plays or pauses the video
      */
     function playVideo() {
-        const videoDiv = document.getElementById('videoContainer');
+        const videoDiv = document.getElementById('video-container');
         const videoElement = videoDiv.querySelector('video');
 
         if (!videoElement) return;
@@ -95,11 +96,10 @@
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
-            const textElement = document.getElementById('textInput');
+            const textElement = document.getElementById('input-prompt');
             const textExists = ![...textElement.classList].includes('fade-out');
             if (event.key === 'Enter' && textExists) {
-                const textInput = document.getElementById('textInput');
-                if (textInput.value !== '') {
+                if (textElement.value !== '') {
                     fetchVideo();
                 }
             }
