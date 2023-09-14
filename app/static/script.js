@@ -3,12 +3,16 @@
      * Fetches the video from the server and embeds it in the page
      */
     async function fetchVideo() {
+        const loaderClassName = 'lds-ripple';
+
         const textElement = document.getElementById('input-prompt');
         if (textElement.value === '') {
             return;
         }
-
         document.body.requestFullscreen();
+
+        // Start loader animation
+        displayLoader(loaderClassName, 'inline-block');
 
         // Start the fade out animation for form elements
         const inputContainer = document.getElementById('input-container');
@@ -20,6 +24,9 @@
         // Fetch the video from the server
         const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
         const blob = await response.blob();
+
+        // End loader animation
+        displayLoader(loaderClassName, 'none');
 
         const videoContainer = document.getElementById('video-container');
         videoContainer.innerHTML = '';  // Clear previous videos if any
@@ -37,6 +44,19 @@
                 }
             }
         });
+    }
+
+    /**
+     * Set the display style of the loader element
+     *  
+     * @param {string} className    The class name of the loader element
+     * @param {string} displayStyle The display style of the loader element
+     * @returns {void}
+     * 
+     */
+    function displayLoader(className, displayStyle) {
+        const [loader] = document.getElementsByClassName(className);
+        loader.style.display = displayStyle
     }
 
     /**
@@ -96,10 +116,10 @@
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
-            const textElement = document.getElementById('input-prompt');
-            const textExists = ![...textElement.classList].includes('fade-out');
-            if (event.key === 'Enter' && textExists) {
-                if (textElement.value !== '') {
+            if (event.key === 'Enter') {
+                const textElement = document.getElementById('input-prompt');
+                const textExists = ![...textElement.classList].includes('fade-out');
+                if (textExists && textElement.value !== '') {
                     fetchVideo();
                 }
             }
