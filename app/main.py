@@ -16,7 +16,11 @@ BASE_PATH = Path(__file__).resolve().parent
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory=str(BASE_PATH / "static")), name="static")
+app.mount(
+    "/static",
+    StaticFiles(directory=str(BASE_PATH / "static")),
+    name="static",
+)
 
 templates = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
