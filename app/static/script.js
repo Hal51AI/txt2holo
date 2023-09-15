@@ -94,14 +94,6 @@
         sourceElement.src = URL.createObjectURL(blob);
 
         videoElement.addEventListener("click", playVideo);
-        videoElement.addEventListener("canplay", (event) => {
-            videoElement.setAttribute('muted', '');
-            videoElement.setAttribute('autoplay', '');
-            videoElement.setAttribute('loop', '');
-            videoElement.setAttribute('playsinline', '');
-            videoElement.muted = true;
-        });
-
         videoElement.appendChild(sourceElement);
 
         return videoElement;
@@ -126,7 +118,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         // Add event listener to the submit button
         const submitButton = document.getElementById('submit');
-        submitButton.addEventListener('touchend', fetchVideo);
         submitButton.addEventListener('click', fetchVideo);
 
         // Submit the form manually if we press enter key
