@@ -90,6 +90,13 @@
         const videoElement = document.createElement('video');
         const sourceElement = document.createElement('source');
 
+        videoElement.setAttribute('autoplay', '');
+        videoElement.setAttribute('loop', '');
+        videoElement.setAttribute('playsinline', '');
+        videoElement.setAttribute('muted', '');
+        videoElement.setAttribute('preload', 'metadata');
+        videoElement.muted = true;
+
         sourceElement.type = 'video/mp4';
         sourceElement.src = URL.createObjectURL(blob);
 
