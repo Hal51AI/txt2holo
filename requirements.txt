@@ -8,4 +8,4 @@ opencv-python
 Pillow
 pydantic_settings
 python-ffmpeg
-uvicorn
+uvicorn[standard]
