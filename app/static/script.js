@@ -9,7 +9,11 @@
         if (textElement.value === '') {
             return;
         }
-        document.body.requestFullscreen();
+
+        // Fullscreen crashes on iOS
+        if (!isIOS()) {
+            document.body.requestFullscreen();
+        }
 
         // Start loader animation
         displayLoader(loaderClassName, 'inline-block');
@@ -44,6 +48,15 @@
                 }
             }
         });
+    }
+
+    /**
+     * Checks if the user is using an iOS device
+     * 
+     * @returns {boolean}
+     */
+    function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     }
 
     /**
@@ -112,7 +125,9 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         // Add event listener to the submit button
-        document.getElementById('submit').addEventListener('click', fetchVideo);
+        const submitButton = document.getElementById('submit');
+        submitButton.addEventListener('touchend', fetchVideo);
+        submitButton.addEventListener('click', fetchVideo);
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
