@@ -5,8 +5,6 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY . /app
-
 RUN : \
     && apt-get -y update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -18,5 +16,7 @@ RUN : \
 
 RUN : \
     && pip install --no-cache -r requirements.txt
+
+COPY . /app
 
 ENTRYPOINT ["gunicorn", "--bind", ":8000", "app.main:app", "--worker-class", "uvicorn.workers.UvicornH11Worker"]
