@@ -67,8 +67,18 @@ input::placeholder {
 }
 
 video {
-    width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
     height: auto;
+
+    /* To center the video both vertically and horizontally in case it doesn't cover the entire screen */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    object-fit: contain;  /* ensures the video maintains its aspect ratio */
 }
 
 /*
