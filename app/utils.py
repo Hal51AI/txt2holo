@@ -85,7 +85,7 @@ def get_dnn_superres(upscale_factor: int = 3) -> cv2.dnn_superres.DnnSuperResImp
             f"/tmp/{filename}",
         )
 
-    sr = cv2.dnn_superres.DnnSuperResImpl_create()
+    sr = cv2.dnn_superres.DnnSuperResImpl().create()
     sr.readModel(f"/tmp/{filename}")
     sr.setModel("espcn", upscale_factor)
 

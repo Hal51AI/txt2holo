@@ -3,9 +3,10 @@ aiohttp
 fastapi
 gunicorn
 jinja2
-opencv-python
+opencv-contrib-python
 Pillow
 pydantic_settings
 python-ffmpeg
 types-aiofiles
+types-ujson
 uvicorn[standard]
