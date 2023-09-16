@@ -136,6 +136,7 @@
         const inputPrompt = document.getElementById('input-prompt');
         inputPrompt.style.transform = invert ? 'scaleX(-1)' : '';
         inputPrompt.style.paddingLeft = invert ? '80px' : '';
+        window.localStorage.setItem('flipTextInput', invert);
     }
 
     /**
@@ -174,6 +175,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Flip the input text from previous session
+        flipTextInput(localStorage.flipTextInput == 'true');
+
         // Add event listener to the submit button
         document.getElementById('submit').addEventListener('click', fetchVideo);
 
