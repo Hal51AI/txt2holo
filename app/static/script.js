@@ -22,9 +22,7 @@
         // Start the fade out animation for form elements
         const inputContainer = document.getElementById('input-container');
         inputContainer.classList.add('fade-out');
-        inputContainer.addEventListener('animationend', () => {
-            inputContainer.style.display = 'none';
-        })
+        inputContainer.addEventListener('animationend', () => inputContainer.style.display = 'none')
 
         // Fetch the video from the server
         const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
@@ -33,6 +31,7 @@
         // End loader animation
         displayLoader(loaderClassName, 'none');
 
+        // Add video to the page
         const videoContainer = document.getElementById('video-container');
         videoContainer.innerHTML = '';  // Clear previous videos if any
         videoContainer.appendChild(createVideoElement(blob));
