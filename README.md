@@ -1,5 +1,7 @@
 txt2holo
 ========
+[![mypy](https://github.com/jjangsangy/txt2holo/actions/workflows/mypy.yml/badge.svg)](https://github.com/jjangsangy/txt2holo/actions/workflows/mypy.yml)
+
 Convert text prompts into a 2d holographic images
 
 # Setup
