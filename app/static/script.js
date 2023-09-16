@@ -165,7 +165,10 @@
         overlays.forEach((overlay) => {
             const overlayElement = document.querySelector(`.${overlay.className}`);
 
-            overlayElement.addEventListener("click", overlay.clickHandler);
+            overlayElement.addEventListener("click", () => {
+                overlay.clickHandler();
+                setTimeout(() => overlayElement.style.backgroundColor = 'rgba(0, 0, 0, 0)', 200);
+            });
             overlayElement.addEventListener('mouseover', () => {
                 overlayElement.style.backgroundColor = 'rgba(192, 192, 192, 0.1)'
             });
