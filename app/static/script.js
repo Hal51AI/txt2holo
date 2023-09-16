@@ -5,6 +5,7 @@
     async function fetchVideo() {
         const loaderClassName = 'lds-ripple';
 
+        // Don't do anything if input text is empty
         const textElement = document.getElementById('input-prompt');
         if (textElement.value === '') {
             return;
@@ -136,7 +137,7 @@
         const inputPrompt = document.getElementById('input-prompt');
         inputPrompt.style.transform = invert ? 'scaleX(-1)' : '';
         inputPrompt.style.paddingLeft = invert ? '80px' : '';
-        window.localStorage.setItem('flipTextInput', invert);
+        localStorage.setItem('flipTextInput', invert);
     }
 
     /**
