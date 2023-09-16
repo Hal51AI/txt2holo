@@ -46,6 +46,8 @@
                 } else {
                     document.body.requestFullscreen();
                 }
+            } else if (event.key === 'r') {
+                window.location.reload();
             }
         });
     }
@@ -90,6 +92,7 @@
         const videoElement = document.createElement('video');
         const sourceElement = document.createElement('source');
 
+        videoElement.classList.add('video-element');
         videoElement.setAttribute('autoplay', '');
         videoElement.setAttribute('loop', '');
         videoElement.setAttribute('playsinline', '');
@@ -122,10 +125,45 @@
         }
     }
 
+    /**
+     * Inverts the input prompt
+     * 
+     * @param {boolean} invert
+     * @returns {void}
+     * 
+     */
+    function flipTextInput(invert) {
+        const inputPrompt = document.getElementById('input-prompt');
+        inputPrompt.style.transform = invert ? 'scaleX(-1)' : '';
+        inputPrompt.style.paddingLeft = invert ? '80px' : '';
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         // Add event listener to the submit button
-        const submitButton = document.getElementById('submit');
-        submitButton.addEventListener('click', fetchVideo);
+        document.getElementById('submit').addEventListener('click', fetchVideo);
+
+        // Add navigation overlays
+        const overlays = [
+            {
+                className: 'top-overlay',
+                clickHandler: () => window.location.reload(),
+            },
+            {
+                className: 'left-overlay',
+                clickHandler: () => flipTextInput(true),
+            },
+            {
+                className: 'right-overlay',
+                clickHandler: () => flipTextInput(false),
+            }
+        ]
+
+        overlays.forEach((overlay) => {
+            const overlayElement = document.querySelector(`.${overlay.className}`);
+            overlayElement.addEventListener("click", overlay.clickHandler);
+            overlayElement.addEventListener('mouseover', () => { overlayElement.style.backgroundColor = 'rgba(192, 192, 192, 0.1)'});
+            overlayElement.addEventListener('mouseout', () => { overlayElement.style.backgroundColor = 'rgba(0, 0, 0, 0)'});
+        })
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
@@ -135,6 +173,10 @@
                 if (textExists && textElement.value !== '') {
                     fetchVideo();
                 }
+            } else if (event.ctrlKey && event.key === 'ArrowLeft') {
+                flipTextInput(true);
+            } else if (event.ctrlKey && event.key === 'ArrowRight') {
+                flipTextInput(false);
             }
         });
     });
