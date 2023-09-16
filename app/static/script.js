@@ -41,14 +41,6 @@
         document.addEventListener('keydown', (event) => {
             if (event.key === ' ' || event.key === 'p') {
                 playVideo();
-            } else if (event.key === 'f') {
-                if (document.fullscreenElement) {
-                    document.exitFullscreen();
-                } else {
-                    document.body.requestFullscreen();
-                }
-            } else if (event.key === 'r') {
-                window.location.reload();
             }
         });
     }
@@ -190,7 +182,13 @@
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
+            if (event.altKey && event.key === 'Enter') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }  else {
+                    document.body.requestFullscreen();
+                }
+            } else if (event.key === 'Enter') {
                 const textElement = document.getElementById('input-prompt');
                 const textExists = ![...textElement.classList].includes('fade-out');
                 if (textExists && textElement.value !== '') {
