@@ -138,11 +138,13 @@
         inputPrompt.style.paddingLeft = invert ? '80px' : '';
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Add event listener to the submit button
-        document.getElementById('submit').addEventListener('click', fetchVideo);
-
-        // Add navigation overlays
+    /**
+     * Creates the navigation overlays
+     * 
+     * @returns {void}
+     * 
+     */
+    function createOverlays() {
         const overlays = [
             {
                 className: 'top-overlay',
@@ -160,10 +162,23 @@
 
         overlays.forEach((overlay) => {
             const overlayElement = document.querySelector(`.${overlay.className}`);
+
             overlayElement.addEventListener("click", overlay.clickHandler);
-            overlayElement.addEventListener('mouseover', () => { overlayElement.style.backgroundColor = 'rgba(192, 192, 192, 0.1)'});
-            overlayElement.addEventListener('mouseout', () => { overlayElement.style.backgroundColor = 'rgba(0, 0, 0, 0)'});
+            overlayElement.addEventListener('mouseover', () => {
+                overlayElement.style.backgroundColor = 'rgba(192, 192, 192, 0.1)'
+            });
+            overlayElement.addEventListener('mouseout', () => {
+                overlayElement.style.backgroundColor = 'rgba(0, 0, 0, 0)'
+            });
         })
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add event listener to the submit button
+        document.getElementById('submit').addEventListener('click', fetchVideo);
+
+        // Add navigation overlays
+        createOverlays();
 
         // Submit the form manually if we press enter key
         document.addEventListener('keydown', (event) => {

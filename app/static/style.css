@@ -116,7 +116,7 @@ input::placeholder {
  */
 @media (max-width: 680px) {
     .input-container {
-        width: 100%;
+        width: 92%;
     }
     .top-overlay {
         height: 7.5vw;
