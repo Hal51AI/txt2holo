@@ -1,6 +1,7 @@
 import base64
 import io
 import tempfile
+import aiofiles
 from pathlib import Path
 from fastapi import FastAPI, Response, Request
 from fastapi.templating import Jinja2Templates
@@ -42,7 +43,7 @@ async def generate_video(prompt: str) -> Response:
 
     with tempfile.TemporaryDirectory() as tmpdir:
         await write_rotating_video(image, f"{tmpdir}/out.mp4")
-        with open(f"{tmpdir}/out.mp4", "rb") as f:
-            video_bytes = f.read()
+        async with aiofiles.open(f"{tmpdir}/out.mp4", "rb") as f:
+            video_bytes = await f.read()
 
     return Response(video_bytes, media_type="video/mp4")
