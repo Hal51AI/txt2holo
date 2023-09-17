@@ -124,6 +124,9 @@ input::placeholder {
     .left-overlay, .right-overlay {
         width: 7.5vw;
     }
+    input {
+        font-size: 0.8rem;
+    }
 }
 
 /* Phones */
