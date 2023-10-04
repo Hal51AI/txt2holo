@@ -1,7 +1,6 @@
-import base64
-import io
 import tempfile
 import aiofiles
+
 from pathlib import Path
 from fastapi import FastAPI, Response, Request
 from fastapi.templating import Jinja2Templates
@@ -9,9 +8,8 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import HTMLResponse
 
 
-from PIL import Image
-
-from .utils import request_image, crop_circle_fade, write_rotating_video
+from .utils import crop_circle_fade, write_rotating_video
+from .utils import request_dalle_image as request_image
 
 BASE_PATH = Path(__file__).resolve().parent
 
@@ -37,8 +35,7 @@ async def home(request: Request):
     responses={200: {"content": {"video/mp4": {}}}},
 )
 async def generate_video(prompt: str) -> Response:
-    response = await request_image(prompt)
-    image = Image.open(io.BytesIO(base64.b64decode(response["artifacts"][0]["base64"])))
+    image = await request_image(prompt)
     image = crop_circle_fade(image, radius_factor=1.5)
 
     with tempfile.TemporaryDirectory() as tmpdir:

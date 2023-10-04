@@ -1,7 +1,9 @@
 import os
 import cv2
+import io
 import aiohttp
 import aiofiles
+import base64
 import numpy as np
 
 from PIL import Image, ImageDraw, ImageFilter
@@ -11,10 +13,52 @@ from typing import Union
 from ffmpeg.asyncio import FFmpeg
 
 from .config import settings
-from .types import StabilityAPIResponse, Numeric
+from .types import Numeric
 
 
-async def request_image(prompt: str) -> StabilityAPIResponse:
+async def request_dalle_image(prompt: str) -> Image.Image:
+    """
+    Requests an image from the DALL-E API.
+
+    Parameters
+    ----------
+    prompt: str
+        Prompt to generate the image from
+
+    Returns
+    -------
+    PIL.Image.Image
+        Generated image
+    """
+    if not settings.OPENAI_API_KEY:
+        raise ValueError("API key is not set in environment variable OPENAI_API_KEY")
+    async with aiohttp.ClientSession() as session:
+        async with session.post(
+            "https://api.openai.com/v1/images/generations",
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {settings.OPENAI_API_KEY}",
+            },
+            json={
+                "prompt": prompt,
+                "n": 1,
+                "size": "1024x1024",
+            },
+        ) as response:
+            if not response.ok:
+                response.raise_for_status()
+            json_result = await response.json()
+
+        async with session.get(json_result["data"][0]["url"]) as response:
+            if not response.ok:
+                response.raise_for_status()
+            image_bytes = await response.content.read()
+
+    return Image.open(io.BytesIO(image_bytes))
+
+
+async def request_stability_image(prompt: str) -> Image.Image:
     """
     Requests an image from the Stability API.
 
@@ -55,7 +99,10 @@ async def request_image(prompt: str) -> StabilityAPIResponse:
             if not response.ok:
                 raise Exception("Non-200 response: " + str(response.text))
             json_result = await response.json()
-    return json_result
+
+    return Image.open(
+        io.BytesIO(base64.b64decode(json_result["artifacts"][0]["base64"]))
+    )
 
 
 def get_dnn_superres(upscale_factor: int = 3) -> cv2.dnn_superres.DnnSuperResImpl:
