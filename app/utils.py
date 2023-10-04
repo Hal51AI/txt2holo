@@ -32,6 +32,7 @@ async def request_dalle_image(prompt: str) -> Image.Image:
     """
     if not settings.OPENAI_API_KEY:
         raise ValueError("API key is not set in environment variable OPENAI_API_KEY")
+
     async with aiohttp.ClientSession() as session:
         async with session.post(
             "https://api.openai.com/v1/images/generations",
@@ -69,8 +70,8 @@ async def request_stability_image(prompt: str) -> Image.Image:
 
     Returns
     -------
-    dict[str, str]
-        Dictionary containing the base64 encoded image
+    PIL.Image.Image
+        Generated image
     """
     if not settings.STABILITY_API_KEY:
         raise ValueError("API key is not set in environment variable STABILITY_API_KEY")

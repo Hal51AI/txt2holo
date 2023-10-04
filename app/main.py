@@ -8,8 +8,15 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import HTMLResponse
 
 
+from .config import settings
 from .utils import crop_circle_fade, write_rotating_video
-from .utils import request_dalle_image as request_image
+
+if settings.IMAGE_API == "stability":
+    from .utils import request_stability_image as request_image
+elif settings.IMAGE_API == "dalle":
+    from .utils import request_dalle_image as request_image
+else:
+    raise ValueError(f"Unknown IMAGE_API name, got: {settings.IMAGE_API}")
 
 BASE_PATH = Path(__file__).resolve().parent
 
