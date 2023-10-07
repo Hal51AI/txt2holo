@@ -8,15 +8,14 @@ from fastapi.staticfiles import StaticFiles
 from starlette.responses import HTMLResponse
 
 
-from .config import settings
-from .utils import crop_circle_fade, write_rotating_video
+from .utils import (
+    crop_circle_fade,
+    write_rotating_video,
+    request_dalle_image,
+    request_stability_image,
+)
+from .models import PromptBody
 
-if settings.IMAGE_API == "stability":
-    from .utils import request_stability_image as request_image
-elif settings.IMAGE_API == "dalle":
-    from .utils import request_dalle_image as request_image
-else:
-    raise ValueError(f"Unknown IMAGE_API name, got: {settings.IMAGE_API}")
 
 BASE_PATH = Path(__file__).resolve().parent
 
@@ -36,13 +35,19 @@ async def home(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 
-@app.get(
+@app.post(
     "/video",
     response_class=Response,
     responses={200: {"content": {"video/mp4": {}}}},
 )
-async def generate_video(prompt: str) -> Response:
-    image = await request_image(prompt)
+async def generate_video(body: PromptBody) -> Response:
+    if body.backend == "dalle":
+        image = await request_dalle_image(body.prompt)
+    elif body.backend == "stability":
+        image = await request_stability_image(body.prompt)
+    else:
+        raise ValueError(f"Invalid image backend: {body.backend}")
+
     image = crop_circle_fade(image, radius_factor=1.5)
 
     with tempfile.TemporaryDirectory() as tmpdir:

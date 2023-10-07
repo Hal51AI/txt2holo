@@ -33,7 +33,7 @@ async def request_dalle_image(prompt: str) -> Image.Image:
     if not settings.OPENAI_API_KEY:
         raise ValueError("API key is not set in environment variable OPENAI_API_KEY")
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
         async with session.post(
             "https://api.openai.com/v1/images/generations",
             headers={
@@ -47,13 +47,9 @@ async def request_dalle_image(prompt: str) -> Image.Image:
                 "size": "1024x1024",
             },
         ) as response:
-            if not response.ok:
-                response.raise_for_status()
             json_result = await response.json()
 
         async with session.get(json_result["data"][0]["url"]) as response:
-            if not response.ok:
-                response.raise_for_status()
             image_bytes = await response.content.read()
 
     return Image.open(io.BytesIO(image_bytes))
@@ -76,7 +72,7 @@ async def request_stability_image(prompt: str) -> Image.Image:
     if not settings.STABILITY_API_KEY:
         raise ValueError("API key is not set in environment variable STABILITY_API_KEY")
 
-    async with aiohttp.ClientSession() as session:
+    async with aiohttp.ClientSession(raise_for_status=True) as session:
         async with session.post(
             "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
             headers={
@@ -97,8 +93,6 @@ async def request_stability_image(prompt: str) -> Image.Image:
                 ],
             },
         ) as response:
-            if not response.ok:
-                raise Exception("Non-200 response: " + str(response.text))
             json_result = await response.json()
 
     return Image.open(

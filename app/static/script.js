@@ -25,7 +25,15 @@
         inputContainer.addEventListener('animationend', () => inputContainer.style.display = 'none')
 
         // Fetch the video from the server
-        const response = await fetch(`/video?prompt=${encodeURIComponent(textElement.value)}`);
+        const response = await fetch(
+            '/video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({prompt: textElement.value, backend: 'dalle'})
+            }
+        );
         const blob = await response.blob();
 
         // End loader animation
