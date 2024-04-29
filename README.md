@@ -29,7 +29,7 @@ docker build -it txt2holo .
 Then run with
 
 ```bash
-docker run -it -p 8000:8000 -e STABILITY_API_KEY=<API_KEY> txt2holo
+docker run -it -p 8000:8000 -e STABILITY_API_KEY=<API_KEY> -e OPENAI_API_KEY=<OPENAI_API_KEY> txt2holo
 ```
 
 ## Docker Compose
