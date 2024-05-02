@@ -4,6 +4,8 @@ txt2holo
 
 Convert text prompts into a 2d holographic images
 
+![prompt](./assets/prompt.png)
+
 # Setup
 Install dependencies with pip
 
