@@ -16,7 +16,7 @@ pip install -r requirements.txt
 # Run
 First make sure to fill out the environment variables in the `.env.example` file and rename it to `.env`
 
-Ensure that you've filled out either `OPENAI_API_KEY` or `STABILITY_API_KEY`. Once you've filled out the API key needed to make requests to the image generation backend, set the `IMAGE_BACKEND` to be either `dalle` for openai and `stability` for stabilityai.
+Ensure that you've filled out either `OPENAI_API_KEY` or `STABILITY_API_KEY` in the `.env` file. Once you've filled out the API keys, set the `IMAGE_BACKEND` to be either `dalle` for openai and `stability` for stabilityai.
 
 Run application by pointing `uvicorn` to the python module
 ```bash
