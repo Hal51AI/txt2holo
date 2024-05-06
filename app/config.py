@@ -1,9 +1,12 @@
+from typing import Optional
+
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    STABILITY_API_KEY: str
-    OPENAI_API_KEY: str
+    IMAGE_BACKEND: Optional[str] = "dalle"
+    STABILITY_API_KEY: Optional[str] = None
+    OPENAI_API_KEY: Optional[str] = None
 
     class Config:
         env_file = ".env"

@@ -31,7 +31,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({prompt: textElement.value, backend: 'stability'})
+                body: JSON.stringify({prompt: textElement.value})
             }
         );
         const blob = await response.blob();

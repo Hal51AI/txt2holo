@@ -1,21 +1,20 @@
 import tempfile
-import aiofiles
-
 from pathlib import Path
-from fastapi import FastAPI, Response, Request
-from fastapi.templating import Jinja2Templates
+
+import aiofiles
+from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from starlette.responses import HTMLResponse
 
-
+from .config import settings
+from .models import PromptBody
 from .utils import (
     crop_circle_fade,
-    write_rotating_video,
     request_dalle_image,
     request_stability_image,
+    write_rotating_video,
 )
-from .models import PromptBody
-
 
 BASE_PATH = Path(__file__).resolve().parent
 
@@ -41,9 +40,9 @@ async def home(request: Request):
     responses={200: {"content": {"video/mp4": {}}}},
 )
 async def generate_video(body: PromptBody) -> Response:
-    if body.backend == "dalle":
+    if settings.IMAGE_BACKEND == 'dalle':
         image = await request_dalle_image(body.prompt)
-    elif body.backend == "stability":
+    elif settings.IMAGE_BACKEND == 'stability':
         image = await request_stability_image(body.prompt)
     else:
         raise ValueError(f"Invalid image backend: {body.backend}")

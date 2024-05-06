@@ -7,3 +7,4 @@ services:
     environment:
       - STABILITY_API_KEY=<API_KEY>
       - OPENAI_API_KEY=<API_KEY>
+      - IMAGE_BACKEND=stability
