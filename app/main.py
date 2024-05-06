@@ -45,7 +45,7 @@ async def generate_video(body: PromptBody) -> Response:
     elif settings.IMAGE_BACKEND == 'stability':
         image = await request_stability_image(body.prompt)
     else:
-        raise ValueError(f"Invalid image backend: {body.backend}")
+        raise ValueError(f"Invalid image backend: {settings.IMAGE_BACKEND}")
 
     image = crop_circle_fade(image, radius_factor=1.5)
 
