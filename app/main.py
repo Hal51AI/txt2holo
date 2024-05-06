@@ -40,9 +40,12 @@ async def home(request: Request):
     responses={200: {"content": {"video/mp4": {}}}},
 )
 async def generate_video(body: PromptBody) -> Response:
-    if settings.IMAGE_BACKEND == 'dalle':
+    if not (settings.OPENAI_API_KEY or settings.STABILITY_API_KEY):
+        raise ValueError("No API key provided for OpenAI or Stability")
+
+    if settings.IMAGE_BACKEND == "dalle":
         image = await request_dalle_image(body.prompt)
-    elif settings.IMAGE_BACKEND == 'stability':
+    elif settings.IMAGE_BACKEND == "stability":
         image = await request_stability_image(body.prompt)
     else:
         raise ValueError(f"Invalid image backend: {settings.IMAGE_BACKEND}")
