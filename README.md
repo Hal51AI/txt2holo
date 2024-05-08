@@ -42,3 +42,22 @@ An easier way to run a container is to fill out the `docker-compose-example.yml`
 ```bash
 docker compose up
 ```
+
+# Controls
+
+Txt2holo is meant to be used on a holographic display. Due to the usage of a screen, text will be inverted when viewed through the device. In order to view the text correctly, you can invert the text by using hotkeys or by clicking on the edges of the screen.
+
+### Hotkeys
+
+| Hotkey          | Description  |
+|-----------------|--------------|
+| Ctrl-LeftArrow  | Reflect Text |
+| Ctrl-RightArrow | Normal Text  |
+
+### Screen Controls
+
+| Touch          | Description  |
+|----------------|--------------|
+| Tap Left Side  | Reflect Text |
+| Tap Right Side | Normal Text  |
+| Tap Top Side   | Refresh Page |
