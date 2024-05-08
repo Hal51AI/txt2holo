@@ -45,7 +45,7 @@ docker compose up
 
 # Controls
 
-Txt2holo is meant to be used on a holographic display. Due to the usage of a screen, text will be inverted when viewed through the device. In order to view the text correctly, you can invert the text by using hotkeys or by clicking on the edges of the screen.
+Txt2holo is designed for holographic displays. When you use this device, the text appears inverted on the screen. To correct this, you can either use hotkeys or click on the screen's edges to invert the text back to normal.
 
 ### Hotkeys
 
