@@ -4,8 +4,6 @@ txt2holo
 
 Convert text prompts into a 2d holographic images
 
-![prompt](./assets/prompt.png)
-
 https://github.com/user-attachments/assets/a8ce75fa-2247-4405-99fe-7f1cced167b2
 
 # Setup
